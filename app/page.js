@@ -1,113 +1,196 @@
+'use client'
 import Image from "next/image";
+import { useState } from "react";
 
 export default function Home() {
+  const [numberOfActivities, setNumberOfActivities] = useState(0);
+  const [activities, setActivities] = useState([]);
+  const [algorithm, setAlgorithm] = useState('fcfs');
+  const [chart, setChart] = useState([]);
+  const [processes, setProcesses] = useState([]);
+
+  const handleAlgoChange = (e) => {
+    setAlgorithm(e.target.value);
+  };
+
+  const handleNumInputChange = (event) => {
+    const num = parseInt(event.target.value);
+    if (num >= 0) {
+      setNumberOfActivities(num);
+      if (num > activities.length) {
+        setActivities([...activities, ...Array.from({ length: num - activities.length }, () => {})]);
+      } else {
+        setActivities([...activities].slice(0, num));
+      }
+    }
+  };
+
+  const validateInput = (e)=>{
+    const name = e.target.id.split('-')[0];
+    if(e.target.value == '')
+      e.target.value = 0;
+    if((name == 'bt' || name == 'quanta') && e.target.value <= 0)
+      e.target.value = 1;
+    else if(e.target.value < 0)
+      e.target.value = 0;
+
+    if(typeof e.target.value != 'number')
+      e.target.value = parseInt(e.target.value);
+  };
+
+  const handleChartApi = async ()=>{
+    let names = [];
+    let arrival_times = [];
+    let burst_times = [];
+    let priorities = [];
+
+    for(let i = 1; i <= numberOfActivities; i++){
+      let name = document.getElementById(`activity_name-${i}`).value;
+      names.push(name);
+
+      let at = parseInt(document.getElementById(`at-${i}`).value);
+      arrival_times.push(at);
+
+      let bt = parseInt(document.getElementById(`bt-${i}`).value);
+      burst_times.push(bt);
+
+      if(algorithm == "ps"){
+        let ps = parseInt(document.getElementById(`bt-${i}`).value);
+        priorities.push(ps);
+      }
+    }
+
+    let req = {
+      algo: algorithm,
+      nm : names,
+      at : arrival_times,
+      bt : burst_times
+    };
+
+    if(algorithm == "ps")
+      req['ps'] = priorities;
+    else if(algorithm == "rrs"){
+      let quanta = parseInt(document.getElementById('quanta'));
+      req['qt'] = quanta;
+    }
+
+    console.log(req);
+
+    let response = await fetch('http://localhost:3000/api/createchart', {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(req)
+    });
+
+    let json = await response.json();
+    console.log(json);
+
+  };
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div className="w-full">
+
+      <h1 className="w-full flex justify-center bg-blue-600 text-white pt-2 pb-2" style={{ "fontSize": "30px" }}>
+        GanttViz
+      </h1>
+
+      <div className="header h-20 w-full flex items-center px-20 bg-blue-300">
+
+        <div className="left flex gap-2 justify-center items-center">
+          <label htmlFor="algorithms">Algorithm: </label>
+          <select name="algorithms" className="border-black border-2 rounded-md" onChange={handleAlgoChange}>
+            <option value="fcfs">First Come First Serve (FCFS)</option>
+            <option value="sjf">Shortest Job First (SJF)</option>
+            <option value="srtf">Shortest Remaining Time First  (SRTF)</option>
+            <option value="lrtf">Longest Remaining Time First  (LRTF)</option>
+            <option value="rrs">Round Robin Scheduling (RRS)</option>
+            <option value="ps">Priority Scheduling</option>
+          </select>
         </div>
+
+        <div className="right flex justify-center items-center">
+          <label htmlFor="activitycount">
+            Number of Processes:
+          </label>
+          <input type="number" name="activitycount" className="ml-2 w-10 text-center border-black border-2 rounded-md" value={numberOfActivities} onChange={handleNumInputChange} />
+        </div>
+
       </div>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+      {
+        activities.length ?
+          <table className="wt-full flex flex-col items-center m-2">
+            {
+              algorithm == "ps" ?
+                <caption>Small number has higher Priority (Max priority 0)</caption> :
+                <caption >&nbsp;</caption>
+            }
+            <thead>
+              <tr className="flex justify-evenly text-white bg-blue-500">
+                <th>Id</th>
+                <th>Name (Optional)</th>
+                <th>Arrival Time</th>
+                <th>Burst Time</th>
+                {
+                  algorithm == "ps" ?
+                    <th>Priority</th> : ""
+                }
+              </tr>
+            </thead>
+            <tbody>
+
+              {
+                activities.map((activity, index) => {
+                  return (
+                    <tr className="flex justify-evenly" key={`row-no-${index + 1}`}>
+                      <td>
+                        P{index + 1}
+                      </td>
+                      <td>
+                        <input id={`activity_name-${index+1}`} type="text" />
+                      </td>
+                      <td>
+                        <input defaultValue={0} onChange={validateInput} id={`at-${index+1}`} type="number" />
+                      </td>
+                      <td>
+                        <input defaultValue={1} onChange={validateInput} id={`bt-${index+1}`} type="number" />
+                      </td>
+                      {
+                        algorithm == "ps" ?
+                          <td>
+                            <input defaultValue={0} onChange={validateInput} id={`ps-${index+1}`} type="number" />
+                          </td> : ""
+                      }
+                    </tr>
+                  )
+                })
+              }
+            </tbody>
+
+          </table>
+          : ""
+      }
+      <div className="submit w-full flex flex-col items-center gap-3 mt-3">
+      {
+        (algorithm == "rrs" && activities.length)?
+        <div>
+          <label htmlFor="quanta">Time Quanta: </label>
+          <input defaultValue={1} onChange={validateInput} type="number" name="quanta" id="quanta" className="border-black rounded-md text-center border-2 w-14"/>
+        </div>
+        :""
+      }
+      {
+        activities.length?
+        <div className="">
+          <button className=" bg-black text-white py-1 px-3 text-center rounded-md" onClick={()=>{
+            handleChartApi();
+          }}>
+            Create Gantt Chart
+          </button>
+        </div>:""
+      }
       </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </div>
   );
 }
