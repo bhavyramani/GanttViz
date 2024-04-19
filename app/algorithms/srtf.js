@@ -1,26 +1,26 @@
 import Process from "../process.mjs";
 import { PriorityQueue } from "@datastructures-js/priority-queue";
 
-export default function Priority(nm, at, bt, ps) {
+export default function SRTF(nm, at, bt) {
     let pro = [];
     let chart = [];
     let processes = [];
     let n = at.length;
     for (let i = 0; i < n; i++) {
-        let process = new Process(i + 1, at[i], bt[i], nm[i], ps[i]);
+        let process = new Process(i + 1, at[i], bt[i], nm[i]);
         pro.push(process);
     }
 
     pro.sort(function (pa, pb) {
         if (pa.at == pb.at)
-            return pa.prio - pb.prio;
+            return pa.bt - pb.bt;
         return pa.at - pb.at;
     });
 
     const pq = new PriorityQueue((pa, pb) => {
-        if (pa.prio == pb.prio)
-            return pa.at - pb.at;
-        return pa.prio - pb.prio;
+        if (pa.rt == pb.rt)
+            return pa.id - pb.id;
+        return pa.rt - pb.rt;
     });
 
     let pt = 0;

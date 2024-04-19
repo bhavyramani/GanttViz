@@ -57,7 +57,7 @@ export default function Home() {
       burst_times.push(bt);
 
       if (algorithm == "ps") {
-        let ps = parseInt(document.getElementById(`bt-${i}`).value);
+        let ps = parseInt(document.getElementById(`ps-${i}`).value);
         priorities.push(ps);
       }
     }
