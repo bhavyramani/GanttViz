@@ -1,4 +1,4 @@
-import Process from "./process";
+import Process from "../process.mjs";
 export default function FCFS(nm, at, bt){
     let pro = [];
     let chart = [];
