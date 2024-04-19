@@ -1,6 +1,6 @@
 export default class Process{
-    constructor(pid, at, bt, name, prio = 0){
-        this.pid = pid;     // Process Id
+    constructor(id, at, bt, name, prio = 0){
+        this.id = id;      // Process Id
         this.at = at;       // Arrival Time
         this.bt = bt;       // Burst Time
         this.name = name;   // Process Name

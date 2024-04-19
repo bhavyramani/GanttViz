@@ -27,11 +27,11 @@ td {
 }
 
 td>input[type="text"] {
-  width: 50%;
+  width: 80%;
 }
 
 td>input[type="number"] {
-  width: 25%;
+  width: 60%;
 }
 
 td>input {
@@ -54,7 +54,7 @@ td {
   }
 
   td>input[type="number"] {
-    width: 35%;
+    width: 50%;
   }
 
   .header {
@@ -100,7 +100,7 @@ td {
 
   thead,
   tbody {
-    width: 100%;
+    width: 98vw;
   }
 
   th {

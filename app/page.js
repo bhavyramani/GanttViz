@@ -8,6 +8,7 @@ export default function Home() {
   const [algorithm, setAlgorithm] = useState('fcfs');
   const [chart, setChart] = useState([]);
   const [processes, setProcesses] = useState([]);
+  const [creatingChart, setCreatingChart] = useState(false);
 
   const handleAlgoChange = (e) => {
     setAlgorithm(e.target.value);
@@ -18,33 +19,34 @@ export default function Home() {
     if (num >= 0) {
       setNumberOfActivities(num);
       if (num > activities.length) {
-        setActivities([...activities, ...Array.from({ length: num - activities.length }, () => {})]);
+        setActivities([...activities, ...Array.from({ length: num - activities.length }, () => { })]);
       } else {
         setActivities([...activities].slice(0, num));
       }
     }
   };
 
-  const validateInput = (e)=>{
+  const validateInput = (e) => {
     const name = e.target.id.split('-')[0];
-    if(e.target.value == '')
+    if (e.target.value == '')
       e.target.value = 0;
-    if((name == 'bt' || name == 'quanta') && e.target.value <= 0)
+    if ((name == 'bt' || name == 'quanta') && e.target.value <= 0)
       e.target.value = 1;
-    else if(e.target.value < 0)
+    else if (e.target.value < 0)
       e.target.value = 0;
 
-    if(typeof e.target.value != 'number')
+    if (typeof e.target.value != 'number')
       e.target.value = parseInt(e.target.value);
   };
 
-  const handleChartApi = async ()=>{
+  const handleChartApi = async () => {
+    setCreatingChart(true);
     let names = [];
     let arrival_times = [];
     let burst_times = [];
     let priorities = [];
 
-    for(let i = 1; i <= numberOfActivities; i++){
+    for (let i = 1; i <= numberOfActivities; i++) {
       let name = document.getElementById(`activity_name-${i}`).value;
       names.push(name);
 
@@ -54,7 +56,7 @@ export default function Home() {
       let bt = parseInt(document.getElementById(`bt-${i}`).value);
       burst_times.push(bt);
 
-      if(algorithm == "ps"){
+      if (algorithm == "ps") {
         let ps = parseInt(document.getElementById(`bt-${i}`).value);
         priorities.push(ps);
       }
@@ -62,19 +64,18 @@ export default function Home() {
 
     let req = {
       algo: algorithm,
-      nm : names,
-      at : arrival_times,
-      bt : burst_times
+      nm: names,
+      at: arrival_times,
+      bt: burst_times
     };
 
-    if(algorithm == "ps")
+    if (algorithm == "ps")
       req['ps'] = priorities;
-    else if(algorithm == "rrs"){
+    else if (algorithm == "rrs") {
       let quanta = parseInt(document.getElementById('quanta'));
       req['qt'] = quanta;
     }
 
-    console.log(req);
 
     let response = await fetch('http://localhost:3000/api/createchart', {
       method: "POST",
@@ -84,8 +85,15 @@ export default function Home() {
       body: JSON.stringify(req)
     });
 
-    let json = await response.json();
-    console.log(json);
+    try{
+      let json = await response.json();
+      console.log(json);
+    }catch(error){
+      alert("Something went Wrong! Try Again");
+      return;
+    }finally{
+      setCreatingChart(false);
+    }
 
   };
   return (
@@ -148,18 +156,18 @@ export default function Home() {
                         P{index + 1}
                       </td>
                       <td>
-                        <input id={`activity_name-${index+1}`} type="text" />
+                        <input id={`activity_name-${index + 1}`} type="text" />
                       </td>
                       <td>
-                        <input defaultValue={0} onChange={validateInput} id={`at-${index+1}`} type="number" />
+                        <input defaultValue={0} onChange={validateInput} id={`at-${index + 1}`} type="number" />
                       </td>
                       <td>
-                        <input defaultValue={1} onChange={validateInput} id={`bt-${index+1}`} type="number" />
+                        <input defaultValue={1} onChange={validateInput} id={`bt-${index + 1}`} type="number" />
                       </td>
                       {
                         algorithm == "ps" ?
                           <td>
-                            <input defaultValue={0} onChange={validateInput} id={`ps-${index+1}`} type="number" />
+                            <input defaultValue={0} onChange={validateInput} id={`ps-${index + 1}`} type="number" />
                           </td> : ""
                       }
                     </tr>
@@ -172,24 +180,28 @@ export default function Home() {
           : ""
       }
       <div className="submit w-full flex flex-col items-center gap-3 mt-3">
-      {
-        (algorithm == "rrs" && activities.length)?
-        <div>
-          <label htmlFor="quanta">Time Quanta: </label>
-          <input defaultValue={1} onChange={validateInput} type="number" name="quanta" id="quanta" className="border-black rounded-md text-center border-2 w-14"/>
-        </div>
-        :""
-      }
-      {
-        activities.length?
-        <div className="">
-          <button className=" bg-black text-white py-1 px-3 text-center rounded-md" onClick={()=>{
-            handleChartApi();
-          }}>
-            Create Gantt Chart
-          </button>
-        </div>:""
-      }
+        {
+          (algorithm == "rrs" && activities.length) ?
+            <div>
+              <label htmlFor="quanta">Time Quanta: </label>
+              <input defaultValue={1} onChange={validateInput} type="number" name="quanta" id="quanta" className="border-black rounded-md text-center border-2 w-14" />
+            </div>
+            : ""
+        }
+        {
+          activities.length ?
+            <div className="">
+              <button className=" bg-black text-white py-1 px-3 text-center rounded-md" onClick={() => {
+                handleChartApi();
+              }}>
+                {
+                  creatingChart ?
+                    "Creating..." :
+                    "Create Gantt Chart"
+                }
+              </button>
+            </div> : ""
+        }
       </div>
     </div>
   );
