@@ -63,6 +63,8 @@ export default function Priority(nm, at, bt, ps) {
     let final_chart = [];
     final_chart.push(chart[0]);
     for(let i = 1; i < chart.length; i++){
+        if(chart[i][1] < chart[i][0])
+            continue;
         if(final_chart[final_chart.length-1][2] == chart[i][2])
             final_chart[final_chart.length-1][1] = chart[i][1];
         else

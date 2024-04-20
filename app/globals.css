@@ -27,11 +27,11 @@ td {
 }
 
 td>input[type="text"] {
-  width: 80%;
+  width: 70%;
 }
 
 td>input[type="number"] {
-  width: 60%;
+  width: 50%;
 }
 
 td>input {
@@ -43,6 +43,10 @@ td>input {
 td {
   background-color: lightskyblue;
   padding: 7px 0px;
+}
+
+.output th, .output td{
+  border: 1px solid black;
 }
 
 
@@ -100,7 +104,7 @@ td {
 
   thead,
   tbody {
-    width: 98vw;
+    width: 100%;
   }
 
   th {
@@ -109,6 +113,11 @@ td {
 
   h1 {
     font-size: 20px !important;
+  }
+
+  .avg-time{
+    flex-direction: column;
+    align-items: center;
   }
 }
 

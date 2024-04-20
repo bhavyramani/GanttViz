@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import fcfs from "@/app/algorithms/fcfs";
-import sjf from "@/app/algorithms/sjf";
-import priority from "@/app/algorithms/priority";
-import srtf from "@/app/algorithms/srtf";
-import lrtf from "@/app/algorithms/lrtf";
+import fcfs from "@/app/_algorithms/fcfs";
+import sjf from "@/app/_algorithms/sjf";
+import priority from "@/app/_algorithms/priority";
+import srtf from "@/app/_algorithms/srtf";
+import lrtf from "@/app/_algorithms/lrtf";
 export async function POST(request){
     try{
         let req = await request.json();
