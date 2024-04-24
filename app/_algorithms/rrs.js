@@ -1,10 +1,6 @@
 import Process from "../process.mjs";
 
 export default function RRS(nm, at, bt, qt) {
-    console.log(nm);
-    console.log(at);
-    console.log(bt);
-    console.log(qt);
     let pro = [];
     let chart = [];
     let processes = [];
