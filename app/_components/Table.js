@@ -4,16 +4,19 @@ const Table = ({ processes, algorithm }) => {
   
   let ct = 0;
   let tat = 0;
+  let wt = 0;
   let n = processes.length;
 
   for(let i = 0; i < n; i++){
     ct += processes[i].ct;
     tat += processes[i].tat;
+    wt += processes[i].wt;
   }
 
   if(n > 0){
     ct /= n;
     tat /= n;
+    wt /= n;
   }
 
   
@@ -79,11 +82,14 @@ const Table = ({ processes, algorithm }) => {
               </tbody>
             </table>
             <div className='avg-time w-full flex justify-evenly mt-5'>
-              <div className='avg-ct'>
-                Avg. Completion Time: {ct}
+              <div className='avg-wt'>
+                Avg. Waiting Time: {wt}
               </div>
               <div className='avg-tat'>
-                Avg. Turn Aroung Time: {tat}
+                Avg. Turn Around Time: {tat}
+              </div>
+              <div className='avg-ct'>
+                Avg. Completion Time: {ct}
               </div>
             </div>
           </div>
