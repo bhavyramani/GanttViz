@@ -56,24 +56,24 @@ export default function Priority(nm, at, bt, ps) {
                 processes.push(top);
             }
         }
-        if(pt < n)
-            chart.push([cur, pro[pt].at-1, 0]);
+        if (pt < n)
+            chart.push([cur, pro[pt].at - 1, 0]);
     }
 
     let final_chart = [];
     final_chart.push(chart[0]);
-    for(let i = 1; i < chart.length; i++){
-        if(chart[i][1] < chart[i][0])
+    for (let i = 1; i < chart.length; i++) {
+        if (chart[i][1] < chart[i][0])
             continue;
-        if(final_chart[final_chart.length-1][2] == chart[i][2])
-            final_chart[final_chart.length-1][1] = chart[i][1];
+        if (final_chart[final_chart.length - 1][2] == chart[i][2])
+            final_chart[final_chart.length - 1][1] = chart[i][1];
         else
             final_chart.push(chart[i]);
     }
 
     chart = final_chart;
 
-    processes.sort(function(pa, pb){
+    processes.sort(function (pa, pb) {
         return pa.id - pb.id;
     });
 

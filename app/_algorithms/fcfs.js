@@ -15,7 +15,7 @@ export default function FCFS(nm, at, bt) {
     pro[0].ct = pro[0].at + pro[0].bt;
     pro[0].calc();
 
-    chart.push([pro[0].at, pro[0].ct - 1, pro[0].id])
+    chart.push([pro[0].at, pro[0].ct - 1, pro[0].id]);
 
     for (let i = 1; i < n; i++) {
         if (pro[i].at > pro[i - 1].ct) {

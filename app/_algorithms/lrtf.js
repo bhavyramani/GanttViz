@@ -85,7 +85,6 @@ export default function LRTF(nm, at, bt) {
         else
             final_chart.push(chart[i]);
     }
-    console.log(chart);
     chart = final_chart;
 
     processes.sort(function (pa, pb) {

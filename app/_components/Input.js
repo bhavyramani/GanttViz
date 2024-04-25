@@ -52,8 +52,6 @@ const Input = ({ activities, algorithm, numberOfActivities, setChart, setProcess
             let quanta = parseInt(document.getElementById('quanta').value);
             req['qt'] = quanta;
         }
-        console.log(req);
-
 
         let response = await fetch('http://localhost:3000/api/createchart', {
             method: "POST",
