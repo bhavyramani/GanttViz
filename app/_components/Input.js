@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Input = ({ activities, algorithm, numberOfActivities, setChart, setProcesses }) => {
+const Input = ({ activities, algorithm, numberOfActivities, setChart, setProcesses, setoutalgo }) => {
 
     const [creatingChart, setCreatingChart] = useState(false);
 
@@ -45,6 +45,7 @@ const Input = ({ activities, algorithm, numberOfActivities, setChart, setProcess
             at: arrival_times,
             bt: burst_times
         };
+        setoutalgo(algorithm);
 
         if (algorithm == "ps")
             req['ps'] = priorities;

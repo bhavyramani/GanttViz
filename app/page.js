@@ -8,6 +8,7 @@ export default function Home() {
   const [numberOfActivities, setNumberOfActivities] = useState(0);
   const [activities, setActivities] = useState([]);
   const [algorithm, setAlgorithm] = useState('fcfs');
+  const [outalgo, setoutalgo] = useState('fcfs');
   const [chart, setChart] = useState([]);
   const [processes, setProcesses] = useState([]);
 
@@ -44,11 +45,12 @@ export default function Home() {
         numberOfActivities={numberOfActivities}
         setChart={setChart}
         setProcesses={setProcesses}
+        setoutalgo={setoutalgo}
       />
 
       <Table
         processes={processes}
-        algorithm={algorithm}
+        outalgo={outalgo}
       />
 
     </div>

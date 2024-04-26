@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-const Table = ({ processes, algorithm }) => {
+const Table = ({ processes, outalgo }) => {
   
   let ct = 0;
   let tat = 0;
@@ -37,7 +37,7 @@ const Table = ({ processes, algorithm }) => {
                   <th>TAT</th>
                   <th>WT</th>
                   {
-                    algorithm == "ps" ?
+                    outalgo == "ps" ?
                       <th>Priority</th> : ""
                   }
                 </tr>
@@ -69,7 +69,7 @@ const Table = ({ processes, algorithm }) => {
                           {process.wt}
                         </td>
                         {
-                          algorithm == 'ps' ?
+                          outalgo == 'ps' ?
                             <td>
                               {process.prio}
                             </td>
