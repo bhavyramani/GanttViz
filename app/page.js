@@ -1,8 +1,9 @@
 'use client'
 import Header from "./_components/Header";
 import Input from "./_components/Input";
-import { useState } from "react";
+import Chart from "./_components/Chart";
 import Table from "./_components/Table";
+import { useState } from "react";
 
 export default function Home() {
   const [numberOfActivities, setNumberOfActivities] = useState(0);
@@ -46,6 +47,11 @@ export default function Home() {
         setChart={setChart}
         setProcesses={setProcesses}
         setoutalgo={setoutalgo}
+      />
+
+      <Chart
+        processes={processes}
+        chart={chart}
       />
 
       <Table
